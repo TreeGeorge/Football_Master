@@ -180,9 +180,74 @@ public class UserController {
 		UserPaymentHistory input = new UserPaymentHistory();
 		
 		input.setUser_id(user.getId());
+		input.setBalance(price + user.getBalance());
 		input.setPrice(price);
 		
 		sqlSession.insert("UserPaymentHistoryMapper.chargeCash", input);
+		sqlSession.update("UserPaymentHistoryMapper.changeUserBalance", input);
+		
+		return 1;
+	}
+	
+	// 유저 캐시 환불
+	@RequestMapping(value="/user/cashRefund", method = RequestMethod.POST)
+	public int userCashRefund(
+			@RequestHeader("accessToken") String accessToken,
+			@RequestBody final UserPaymentHistory userPaymentHistory) {
+		
+		String email = userService.checkToken(accessToken);
+		
+		if (email == null) {
+			return 0;
+		}
+		
+		User user = sqlSession.selectOne("UserMapper.selectUser", email);
+		
+		int price = userPaymentHistory.getPrice();
+		
+		UserPaymentHistory input = new UserPaymentHistory();
+		
+		if (user.getBalance() - price < 0) {
+			return 2; // 환불하려는 금액이 보유 금액보다 클때
+		}
+		
+		input.setUser_id(user.getId());
+		input.setBalance(user.getBalance() - price);
+		input.setPrice(price);
+		
+		sqlSession.insert("UserPaymentHistoryMapper.refundCash", input);
+		sqlSession.update("UserPaymentHistoryMapper.changeUserBalance", input);
+		
+		return 1;
+	}
+	
+	// 유저 캐시 환불
+	@RequestMapping(value="/user/cashUse", method = RequestMethod.POST)
+	public int userCashUse(
+			@RequestHeader("accessToken") String accessToken,
+			@RequestBody final UserPaymentHistory userPaymentHistory) {
+		
+		String email = userService.checkToken(accessToken);
+		
+		if (email == null) {
+			return 0;
+		}
+		
+		User user = sqlSession.selectOne("UserMapper.selectUser", email);
+		
+		int price = userPaymentHistory.getPrice();
+		
+		UserPaymentHistory input = new UserPaymentHistory();
+		
+		if (user.getBalance() - price < 0) {
+			return 2; // 사용하려는 금액이 보유 금액보다 클때
+		}
+		
+		input.setUser_id(user.getId());
+		input.setBalance(user.getBalance() - price);
+		input.setPrice(price);
+		
+		sqlSession.insert("UserPaymentHistoryMapper.useCash", input);
 		sqlSession.update("UserPaymentHistoryMapper.changeUserBalance", input);
 		
 		return 1;
