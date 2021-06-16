@@ -1,5 +1,8 @@
 package com.newdeal.footballMaster.dao;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -10,7 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.newdeal.footballMaster.jwt.AccessToken;
 import com.newdeal.footballMaster.model.User;
+import com.newdeal.footballMaster.service.UserService;
 
 //import lombok.extern.slf4j.Slf4j;
 
@@ -37,12 +42,40 @@ public class UserTest {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	@Autowired
+	UserService userService;
+	
 	/** 단일행 조회 테스트 */
+//    @Test
+//    public void test1() {    
+//        
+//        if (sqlSession.selectOne("UserMapper.selectUser", "zxcv3@naver.com") ==null ) {
+//         System.out.println(123);	
+//        }
+//    }
+  
+    
+	
+	/** 토큰 유효성 검사 테스트
+	 * @throws UnsupportedEncodingException */
     @Test
-    public void test1() {    
-        User input = new User();
-        input.setEmail("asdf@naver.com");
-        sqlSession.selectOne("UserMapper.selectUser", input);
+    public void test2() throws UnsupportedEncodingException {    
+    	
+    	AccessToken createToken = new AccessToken();
+    	String accessToken = createToken.createToken("asdf@naver.com");
+    	System.out.println("엑세스토큰입니다 : " + accessToken);
+        
+        Map<String, Object> claimMap = createToken.verifyJWT(accessToken);
+        
+        System.out.println("이게 어딘지 보여줘 : " + claimMap);
+        
+//        String email = (String) claimMap.get("data");
+//        
+//        User output = new User();
+//        output = userService.getUser(email);
+        
     }
+	
+ 
 
 }

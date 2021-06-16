@@ -61,6 +61,7 @@
 		});
 	}
 
+	
     function onSignIn(googleUser) {
         // Useful data for your client-side scripts:
         var profile = googleUser.getBasicProfile();
@@ -72,24 +73,26 @@
         console.log("Email: " + profile.getEmail());	// << 유저 이메일값
 
         var email_value = profile.getEmail();
-        var type_value = "G";
+        
 
-        $.post('signInUser.do',{email:email_value, type:type_value},function(req){
-            if(req == '2'){
+        $.post('signInUser.do',{email:email_value},function(req){
+            if(req == 1){
             	swal({
                     html: "<b>회원가입을 축하드립니다.</b>",    // 내용
                     type: "success",  // 종류
                     confirmButtonText: "확인", // 확인버튼 표시 문구
                     confirmButtonColor: "#ff3253", // 확인버튼 색상
                 }).then(function(){
-                	$(location).attr('href','/');
+                	$(location).attr('href','/footballMaster');
                 });
-            }else if (req == '1'){
+            }else if (req == 0){
             	swal({
                     html: "<b>이미 가입되어있는 아이디 입니다.</b>",    // 내용
                     type: "error",  // 종류
                     confirmButtonText: "확인", // 확인버튼 표시 문구
                     confirmButtonColor: "#ff3253", // 확인버튼 색상
+                }).then(function(){
+             //   	$(location).attr('href','/footballMaster');
                 });
             }
         });
@@ -99,22 +102,24 @@
     }
       
     function signOut() {    // 소셜 로그인 타입을 저장해놓고 해당 타입을 불러와서 if 조건문안에 넣어주기
-    	  if (temp) {
-    		  gapi.auth2.getAuthInstance().disconnect();
-
-
-    	  } else if (temp2) {
-    		  if (!Kakao.Auth.getAccessToken()) {
-    			  console.log('로그인 안대찌롱');
-    			  return;
-    		  }
-    		  
-    		  Kakao.Auth.logout(function() {
-    			  console.log('로그아웃 대찌롱');
-    			  temp2 = null;
-    		  })
-    		  
-    	  }
+    	gapi.auth2.getAuthInstance().disconnect();
+    	$(location).attr('href','logout.do');
+//    	  if (temp) {
+//   		  gapi.auth2.getAuthInstance().disconnect();
+//
+//
+//    	  } else if (temp2) {
+//    		  if (!Kakao.Auth.getAccessToken()) {
+//    			  console.log('로그인 안대찌롱');
+//    			  return;
+//    		  }
+//    		  
+//    		  Kakao.Auth.logout(function() {
+//    			  console.log('로그아웃 대찌롱');
+//    			  temp2 = null;
+//    		  })
+//    		  
+//    	  }
     	  
     }
     

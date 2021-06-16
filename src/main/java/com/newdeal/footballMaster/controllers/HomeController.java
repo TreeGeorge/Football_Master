@@ -1,5 +1,6 @@
 package com.newdeal.footballMaster.controllers;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.newdeal.footballMaster.model.MatchFilter;
-import com.newdeal.footballMaster.model.User;
+//import com.newdeal.footballMaster.model.User;
 import com.newdeal.footballMaster.service.MatchFilterService;
 import com.newdeal.footballMaster.service.UserService;
 
@@ -33,18 +36,24 @@ import com.newdeal.footballMaster.service.UserService;
 public class HomeController {
 	
 	@Autowired
+	SqlSession sqlSession;
+	
+	@Autowired
 	UserService userService;
 	
 	@Autowired
 	MatchFilterService matchFilterService;
+	
+	@Value("#{servletContext.contextPath}")
+	String contextPath;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	@RequestMapping(value = {"/","home"}, method = {RequestMethod.GET, RequestMethod.POST})
+	public String home(Locale locale, Model model, HttpServletResponse response, HttpSession session) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date();
@@ -54,36 +63,71 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
+//		// TODO 로그인 끝나고 유저정보에 핸드폰 정보가 존재하지 않으면 정보입력 페이지로 계속 이동시켜버림
+		// TODO 해당 코드는 
+		// 로그인이 필요한 모든 뷰페이지 컨트롤러에 넣을것임.
+//		String accessToken = (String)session.getAttribute("accessToken");
+//		if ( accessToken == null ) {
+//			try {
+//				response.sendRedirect(contextPath + "/home");
+//				return "home";
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+		
+//		
+//		// TODO 세션에 저장된 엑세스토큰의 유효성 검사
+//		// 코드를 수정해서 값을 리턴받아서 얼럿창을 띄워주는것도 좋아보임
+//		// 일단 실패했을때 메인 페이지로 돌아가게 하고 세션값을 초기화 시켜서 재 로그인 시키게 하였음.
+//		// 성공하면 그냥 통과
+//		String accessToken = (String)session.getAttribute("accessToken");
+//		if (userService.checkToken(accessToken)) {
+//			try {
+//				session.invalidate();
+//				response.sendRedirect(contextPath + "/home");
+//				return "home";
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+		
+		
 		return "home";
 	}
 	
-	// 회원 가입
+	// 로그인
 	@ResponseBody
-	@RequestMapping(value = "signInUser.do", method = RequestMethod.POST)
-	public String signInUser(HttpSession session,
-			@RequestParam(value="email") String email,
-			@RequestParam(value="type") String type) {
+	@RequestMapping(value = "login.do", method = RequestMethod.POST)
+	public int loginUser(HttpSession session,
+			@RequestParam(value="email") String email) {
 		
-		// TODO 잘못된 정보 들어왔을때 대응 필요함 프론트에서 하던지 둘다 하던지 일단 작성해야함
-		// TODO 같은 이메일정보의 구글, 네이버, 카카오톡 로그인시 병합하는 기능 추가 << 아마 impl 매퍼 죄다 수정
-		// TODO 구글은 왜 바로불러오는가... 알아야함 ㅠㅠ
-		// TODO 세션비교값을 토큰값으로 바꿔야함 email xxxx << 이거는 로그인에서 적용
-		
-		User input = new User();
-		
-		input.setEmail(email);
-		input.setType(type);
-		
-		if (userService.checkUser(email)) {
-			return "1";
-		} else {
-			userService.signInUser(input);
-			return "2";
+		// 받은 이메일값이 없으면 소셜 로그인 자체를 실패한것임.
+		// 해당 리턴값을 받고 프론트에서 소셜로그인 실패 얼럿창을 띄워주고 메인페이지로 보내주는게 좋아보임
+		if (email == null) {
+			return 1;
+		} else if ( sqlSession.selectOne("UserMapper.selectUser", email) == null ) {
+			// 로그인에는 성공했지만 회원정보가 없을때 리턴값임.
+			// 프론트에서 회원가입쪽으로 유도해야함
+			return 2;
 		}
 		
+		// 로그인에 성공한값임. 메인페이지로 이동시키거나 해당 페이지 refresh
+		return 0;
 		
-		
-		
+	}
+	
+	// 로그아웃
+	// 세션을 제거하는것이므로 소셜 로그아웃은 프론트에서 해야함(소셜 로그아웃 시키면서 호출하면 좋음)
+	@RequestMapping(value="logout.do",method=RequestMethod.GET)
+	public void logout(HttpSession session, HttpServletResponse response) { 
+		session.invalidate();
+		try {
+			response.sendRedirect(contextPath + "/home");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*매치필터 ajax*/
