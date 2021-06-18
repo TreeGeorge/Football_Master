@@ -10,25 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.newdeal.footballMaster.jwt.AccessToken;
-import com.newdeal.footballMaster.model.User;
-import com.newdeal.footballMaster.service.UserService;
+//import com.newdeal.footballMaster.model.User;
+import com.newdeal.footballMaster.service.UsersService;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UsersServiceImpl implements UsersService{
 	
 	/** MyBatis 세션 객체 주입 설정 */
 	@Autowired
 	SqlSession sqlSession;
-
-	// user의 정보를 가져온다
-	@Override
-	public User getUser(String email) {
-
-		User result = new User();
-        result = sqlSession.selectOne("UserMapper.selectUser", email);
-        
-        return result;
-	}
 
 	// session의 access token 체크
 	@Override
@@ -59,7 +49,6 @@ public class UserServiceImpl implements UserService{
 		String accessToken = createToken.createToken(email);
 		
 		session.setAttribute("accessToken", accessToken);
-		
 	}
 
 }

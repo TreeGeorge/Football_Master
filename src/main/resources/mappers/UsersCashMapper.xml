@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="UsersCashMapper">
+
+    <!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
+    <resultMap id="usersCashMap" type="com.newdeal.footballMaster.model.UsersCash">
+
+    	<!-- Beans의 멤버변수(property)이름과 대상 테이블의 컬럼(column)을 연결한다. -->
+        <result property="id" column="id" />
+        <result property="type" column="type" />
+		<result property="price" column="price" />
+		<result property="created_at" column="created_at" />
+		<result property="users_id" column="users_id" />
+		<result property="balance" column="balance" />
+		
+    </resultMap>
+    
+    <!-- 유저 결제 정보 가져오기 -->
+    <select id="selectUserCash" parameterType="com.newdeal.footballMaster.model.UsersCash"
+        resultMap="usersCashMap">
+        SELECT IF(type='C', '충전', IF(type='R', '환불', IF(type='U', '사용', '결제 취소'))) AS type, price, c.created_at, balance
+        FROM users u, users_cash c
+        WHERE u.id = c.user_id
+		AND users_id = #{users_id};
+    </select>
+    
+    <!-- 유저 캐시 충전 -->
+	<insert id="chargeCash" parameterType="com.newdeal.footballMaster.model.UsersCash"
+	useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO users_cash (type, price, users_id)
+		VALUES ('C', #{price}, #{users_id});
+	</insert> 
+	
+	<!-- 유저 캐시 환불 -->
+	<insert id="refundCash" parameterType="com.newdeal.footballMaster.model.UsersCash"
+	useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO users_cash (type, price, users_id)
+		VALUES ('R', #{price}, #{users_id});
+	</insert> 
+	
+	<!-- 유저 캐시 사용 -->
+	<insert id="useCash" parameterType="com.newdeal.footballMaster.model.UsersCash"
+	useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO users_cash (type, price, users_id)
+		VALUES ('U', #{price}, #{users_id});
+	</insert> 
+	
+	<!-- 유저 캐시 재 지급 -->
+	<insert id="withdrawalCash" parameterType="com.newdeal.footballMaster.model.UsersCash"
+	useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO users_cash (type, price, users_id)
+		VALUES ('W', #{price}, #{users_id});
+	</insert> 
+	
+	<!-- 유저 금액 변경 -->
+	<update id="changeUserBalance" parameterType="com.newdeal.footballMaster.model.UsersCash">
+		UPDATE users SET balance = #{balance} WHERE id = #{users_id};
+	</update>
+
+
+</mapper>

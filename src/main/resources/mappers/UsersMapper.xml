@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
-	<mapper namespace="UserMapper">
+	<mapper namespace="UsersMapper">
 
     <!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
-    <resultMap id="userMap" type="com.newdeal.footballMaster.model.User">
+    <resultMap id="usersMap" type="com.newdeal.footballMaster.model.Users">
 
     	<!-- Beans의 멤버변수(property)이름과 대상 테이블의 컬럼(column)을 연결한다. -->
         <result property="id" column="id" />
@@ -34,50 +34,50 @@
     <!-- </select> -->
     
     <!-- 유저 정보 가져오기 -->
-    <select id="selectUser" parameterType="com.newdeal.footballMaster.model.User"
-        resultMap="userMap">
+    <select id="selectUser" parameterType="com.newdeal.footballMaster.model.Users"
+        resultMap="usersMap">
         SELECT id, email, name, IF(gender='M', '남성', '여성') AS gender,
         	   birthday, balance, fair_point, phone_number
-        FROM user
+        FROM users
 		WHERE email = #{email};
     </select>
     
     <!-- 유저 생성 -->
-	<insert id="createUser" parameterType="com.newdeal.footballMaster.model.User"
+	<insert id="createUser" parameterType="com.newdeal.footballMaster.model.Users"
 	useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO user (email)
+		INSERT INTO users (email)
 		VALUES (#{email});
 	</insert> 
 	
 	<!-- 유저 정보 변경 -->
-	<update id="updateUser" parameterType="com.newdeal.footballMaster.model.User">
-		UPDATE user 
+	<update id="updateUser" parameterType="com.newdeal.footballMaster.model.Users">
+		UPDATE users 
 		SET gender = #{gender}, name = #{name}, birthday = #{birthday}, phone_number = #{phone_number} 
 		WHERE email = #{email};
 	</update> 
 	
 	<!-- 유저 삭제 -->
 	<delete id="deleteUser"
-		parameterType="com.newdeal.footballMaster.model.User">
-		DELETE FROM user WHERE id = #{id};	
+		parameterType="com.newdeal.footballMaster.model.Users">
+		DELETE FROM users WHERE id = #{id};	
 	</delete>
 	
 	<!-- 유저 은행 정보 삭제 -->
-	<delete id="deleteUserBank"
-		parameterType="com.newdeal.footballMaster.model.User">
-		DELETE FROM user_bank WHERE user_id = #{id};	
+	<delete id="deleteUsersBanks"
+		parameterType="com.newdeal.footballMaster.model.Users">
+		DELETE FROM users_banks WHERE users_id = #{id};	
 	</delete>
 	
 	<!-- 유저 매치 정보 삭제 -->
-	<delete id="deleteUserMatch"
-		parameterType="com.newdeal.footballMaster.model.User">
-		DELETE FROM user_match WHERE user_id = #{id};	
+	<delete id="deleteUsersMatches"
+		parameterType="com.newdeal.footballMaster.model.Users">
+		DELETE FROM users_matches WHERE users_id = #{id};	
 	</delete>
 	
 	<!-- 유저 거래 내역 삭제 -->
-	<delete id="deleteUserPaymentHistory"
-		parameterType="com.newdeal.footballMaster.model.User">
-		DELETE FROM user_payment_history WHERE user_id = #{id};	
+	<delete id="deleteUsersCash"
+		parameterType="com.newdeal.footballMaster.model.Users">
+		DELETE FROM users_cash WHERE users_id = #{id};	
 	</delete>
 
 
