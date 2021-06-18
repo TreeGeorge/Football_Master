@@ -16,7 +16,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.newdeal.footballMaster.jwt.AccessToken;
 import com.newdeal.footballMaster.model.Users;
 import com.newdeal.footballMaster.model.UsersCash;
-import com.newdeal.footballMaster.service.UsersService;
 
 //import lombok.extern.slf4j.Slf4j;
 
@@ -43,8 +42,6 @@ public class UserTest {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	@Autowired
-	UsersService userService;
 	
 //	/** 단일행 조회 테스트 */
 //    @Test
@@ -63,11 +60,10 @@ public class UserTest {
     @Test
     public void test2() throws UnsupportedEncodingException {    
     	
-    	AccessToken createToken = new AccessToken();
-    	String accessToken = createToken.createToken("asdf@naver.com");
+    	String accessToken = AccessToken.getInstance().createToken("asdf@naver.com");
     	System.out.println("엑세스토큰입니다 : " + accessToken);
         
-        Map<String, Object> claimMap = createToken.verifyJWT(accessToken);
+        Map<String, Object> claimMap = AccessToken.getInstance().verifyJWT(accessToken);
         
         System.out.println("이게 어딘지 보여줘 : " + claimMap);
         

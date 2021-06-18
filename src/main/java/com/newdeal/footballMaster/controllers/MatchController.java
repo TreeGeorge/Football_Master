@@ -34,7 +34,7 @@ public class MatchController {
 	public Matches getMatch(
 			@PathVariable("id") int id) {
 		
-		Matches output = sqlSession.selectOne("MatchMapper.selectMatch", id);
+		Matches output = sqlSession.selectOne("MatchesMapper.selectMatch", id);
 		
 		return output;
 	}

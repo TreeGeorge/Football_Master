@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +16,25 @@ public class AccessToken {
 	
 	// TMI : 고유 암호화 키인데 하드코딩보다는 외부에서 끌고오는게 좋다..
 	final String key = "어림도없지";
+	
+	private static AccessToken current = null;
+	
+	public static AccessToken getInstance() {
+		if (current == null) {
+			current = new AccessToken();
+		}
+		return current;
+	}
+	
+	public static void freeInstance() {
+		// 객체에 null을 대입하면 메모리에서 삭제된다.
+		current = null;
+	}
+	
+	private AccessToken() {
+		super();
+	}
+	
 
     //토큰 생성
     public String createToken(String email) {
@@ -65,5 +86,32 @@ public class AccessToken {
         }
         return claimMap;
     }    
+    
+    public String checkToken(String accessToken){
+		
+		AccessToken checkToken = new AccessToken();
+		
+		Map<String, Object> result;
+		try {
+			result = checkToken.verifyJWT(accessToken);
+			if (result == null) {
+				return null;
+			} else {
+				String email = (String) result.get("data");
+				return email;
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+    
+    public void creatToken(HttpSession session, String email) {
+		
+		AccessToken createToken = new AccessToken();
+		String accessToken = createToken.createToken(email);
+		
+		session.setAttribute("accessToken", accessToken);
+	}
    
 }

@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newdeal.footballMaster.jwt.AccessToken;
 import com.newdeal.footballMaster.model.Matches;
 import com.newdeal.footballMaster.model.Response;
 import com.newdeal.footballMaster.model.Users;
 import com.newdeal.footballMaster.model.UsersBanks;
 import com.newdeal.footballMaster.model.UsersCash;
-import com.newdeal.footballMaster.service.UsersService;
 
 @RestController
 public class UsersController {
@@ -26,15 +26,12 @@ public class UsersController {
 	@Autowired
 	SqlSession sqlSession;
 	
-	@Autowired
-	UsersService usersService;
-	
 	// 단일 유저 정보 호출
-	@RequestMapping(value="/my" , method = RequestMethod.GET)
+	@RequestMapping(value="/my", method = RequestMethod.GET)
 	public Users getUser(
 			@RequestHeader("accessToken") String accessToken) {
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {	// 토큰이 유효하지 않을때
 			return null;
@@ -55,7 +52,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -87,7 +84,7 @@ public class UsersController {
 				input.setName(user.getName());
 			}
 			
-			if (user.getPhone_number() != 0) {
+			if (user.getPhone_number() != null) {
 				input.setPhone_number(user.getPhone_number());
 			}
 			//TODO 오우 아니야 그냥 계좌 정보도 여기서 수정하게 하셈! 걍 정보 받아서 넣어주는거임! 생성도 받은정보로 생성떄리면댐!
@@ -112,7 +109,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {	// 토큰이 유효하지 않을때
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -155,12 +152,12 @@ public class UsersController {
 			answer.setResponse("Fail : 이메일이 유효하지 않습니다.");
 			return answer;
 		} else if (sqlSession.selectOne("UsersMapper.selectUser", email) != null){
-			usersService.creatToken(session, email);
+			AccessToken.getInstance().creatToken(session, email);
 			answer.setResponse("Success : 로그인 되었습니다.");
 			return answer;
 		} else {
 			sqlSession.insert("UsersMapper.createUser", email);
-			usersService.creatToken(session, email);
+			AccessToken.getInstance().creatToken(session, email);
 			answer.setResponse("Success : 회원가입 및 로그인 되었습니다.");
 			return answer;
 		}
@@ -191,7 +188,7 @@ public class UsersController {
 	public List<UsersCash> getUserCash(
 			@RequestHeader("accessToken") String accessToken) {
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			return null;
@@ -214,7 +211,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -252,7 +249,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -295,7 +292,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -352,7 +349,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -395,7 +392,7 @@ public class UsersController {
 	public UsersBanks getUserBank(
 			@RequestHeader("accessToken") String accessToken) {
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {	// 토큰이 유효하지 않을때
 			return null;
@@ -417,7 +414,7 @@ public class UsersController {
 		
 		Response answer = new Response();
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {
 			answer.setResponse("Fail : 토큰이 유효하지 않습니다.");
@@ -460,7 +457,7 @@ public class UsersController {
 	public List<Matches> getUserMatch(
 			@RequestHeader("accessToken") String accessToken) {
 		
-		String email = usersService.checkToken(accessToken);
+		String email = AccessToken.getInstance().checkToken(accessToken);
 		
 		if (email == null) {	// 토큰이 유효하지 않을때
 			return null;

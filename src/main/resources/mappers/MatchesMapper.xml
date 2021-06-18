@@ -30,6 +30,10 @@
 		<result property="special_thing" column="special_thing" />
 		<result property="area" column="area" />
 		<result property="users_id" column="users_id" />
+		<result property="phone_number" column="phone_number" />
+		<result property="birthday" column="birthday" />
+		<result property="greetings" column="greetings" />
+		<result property="manager_name" column="manager_name" />
 		
     </resultMap>
 	
@@ -57,7 +61,7 @@
         SELECT match_date,
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
-        	   fields_id, m.id, f.name, r.name, participation_fee, place,
+        	   fields_id, m.id, f.name, managers_id, participation_fee, place, birthday, greetings,
         	   IF(man_to_man_rule='A', '3:3', IF(man_to_man_rule='B', '4:4', IF(man_to_man_rule='C', '5:5', IF(man_to_man_rule='D', '6:6', '7:7')))) AS man_to_man_rule,
         	   IF(floor_material='G', '잔디', '우레탄') AS floor_material,
                IF(shose_rule='F', '풋살화', '모든 신발') AS shose_rule,
@@ -66,7 +70,7 @@
                IF(shose_rent='Y', '가능', '불가능') AS shose_rent,
                IF(clothes_rent='Y', '가능', '불가능') AS clothes_rent,
                IF(area='A', '서울', IF(area='B', '경기', IF(area='C', '인천', IF(area='D', '대전', IF(area='E', '대구', IF(area='F', '부산', IF(area='G', '울산', IF(area='H', '광주', IF(area='I', '충북', IF(area='J', '경북', IF(area='K', '전북', IF(area='L', '충남', '경남')))))))))))) AS area,
-               min_people, max_people, size, special_thing, m.id
+               min_people, max_people, size, special_thing, m.id, r.name AS manager_name, phone_number
         FROM matches m, fields f, managers r
 		WHERE m.id = #{id}
         AND f.id = (SELECT fields_id FROM matches WHERE id = #{id})

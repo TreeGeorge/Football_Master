@@ -17,9 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-//import com.newdeal.footballMaster.model.User;
-import com.newdeal.footballMaster.service.UsersService;
-
 //import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,9 +28,6 @@ public class HomeController {
 	
 	@Autowired
 	SqlSession sqlSession;
-	
-	@Autowired
-	UsersService userService;
 	
 	@Value("#{servletContext.contextPath}")
 	String contextPath;
