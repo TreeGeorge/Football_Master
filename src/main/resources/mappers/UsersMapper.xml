@@ -63,22 +63,25 @@
 	</delete>
 	
 	<!-- 유저 은행 정보 삭제 -->
-	<delete id="deleteUsersBanks"
+	<delete id="deleteUserBank"
 		parameterType="com.newdeal.footballMaster.model.Users">
 		DELETE FROM users_banks WHERE users_id = #{id};	
 	</delete>
 	
 	<!-- 유저 매치 정보 삭제 -->
-	<delete id="deleteUsersMatches"
+	<delete id="deleteUserMatches"
 		parameterType="com.newdeal.footballMaster.model.Users">
 		DELETE FROM users_matches WHERE users_id = #{id};	
 	</delete>
 	
 	<!-- 유저 거래 내역 삭제 -->
-	<delete id="deleteUsersCash"
+	<!-- 거래내역은 유저가 삭제하더라도 가지고있는게 맞다고 생각함 -->
+	<!-- 
+	<delete id="deleteUserCash"
 		parameterType="com.newdeal.footballMaster.model.Users">
 		DELETE FROM users_cash WHERE users_id = #{id};	
 	</delete>
+	 -->
 
 
 </mapper>

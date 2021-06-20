@@ -19,12 +19,16 @@ import com.newdeal.footballMaster.model.Response;
 import com.newdeal.footballMaster.model.Users;
 import com.newdeal.footballMaster.model.UsersBanks;
 import com.newdeal.footballMaster.model.UsersCash;
+import com.newdeal.footballMaster.service.UsersCashService;
 
 @RestController
 public class UsersController {
 	
 	@Autowired
 	SqlSession sqlSession;
+	
+	@Autowired
+	UsersCashService usersCashService;
 	
 	// 단일 유저 정보 호출
 	@RequestMapping(value="/my", method = RequestMethod.GET)
@@ -89,7 +93,7 @@ public class UsersController {
 			}
 			//TODO 오우 아니야 그냥 계좌 정보도 여기서 수정하게 하셈! 걍 정보 받아서 넣어주는거임! 생성도 받은정보로 생성떄리면댐!
 			//TODO 그렇게해서 부르는거임 환불때 계좌정보 입력 시키는것도! 이걸!! 하 하
-			//TODO 어짜피 보유 금액보다 적으면 환불 못하니까 환불 불러도 작동 안함 뿌뿌~~
+			// 어짜피 보유 금액보다 적으면 환불 못하니까 환불 불러도 작동 안함
 			if (sqlSession.selectOne("UsersBanksMapper.selectUserBank", input.getId()) == null) {
 				// 유저의 환불계좌 정보가 없을시 생성
 				sqlSession.insert("UsersBanksMapper.createUserBank", input.getId());
@@ -125,11 +129,9 @@ public class UsersController {
 			
 			int users_id = user.getId();
 			
-			// TODO 온 디스케이디드 머가댔든 연결해서 지워지게 해줘
-			// TODO 두개기능이 합쳐지는 같은경우는 _로 설명을 하던지 동사로..
+			// 디스케이디드에 대한 공부 필요,,,, 결제 내역은 가지고있어야 된다고 생각해서 안지웠음
 			sqlSession.delete("UsersMapper.deleteUserBank", users_id);
 			sqlSession.delete("UsersMapper.deleteUserMatches", users_id);
-			sqlSession.delete("UsersMapper.deleteUserPaymentHistories", users_id);
 			sqlSession.delete("UsersMapper.deleteUser", users_id);
 			
 			answer.setResponse("Success : 성공적으로 삭제되었습니다.");
@@ -233,11 +235,8 @@ public class UsersController {
 		input.setBalance(price + user.getBalance());
 		input.setPrice(price);
 		
-		// TODO 트랜젝션?? 그거 해야함
-		sqlSession.insert("UsersCashMapper.chargeCash", input);
-		sqlSession.update("UsersCashMapper.changeUserBalance", input);
-		
-		answer.setResponse("Success : 충전 되었습니다.");
+		answer.setResponse(usersCashService.chargeCash(input));
+
 		return answer;
 	}
 	
@@ -276,11 +275,8 @@ public class UsersController {
 		input.setBalance(user.getBalance() - price);
 		input.setPrice(price);
 		
-		//TODO 트랜젝션@!
-		sqlSession.insert("UsersCashMapper.refundCash", input);
-		sqlSession.update("UsersCashMapper.changeUserBalance", input);
-		
-		answer.setResponse("Success : 환불 되었습니다.");
+		answer.setResponse(usersCashService.refundCash(input));
+
 		return answer;
 	}
 	
@@ -303,6 +299,21 @@ public class UsersController {
 		
 		Matches matchInput = sqlSession.selectOne("MatchesMapper.selectMatch", match_id);
 		
+		if (matchInput == null) {
+			answer.setResponse("Fail : 매치가 존재하지 않습니다.");
+			return answer;
+		}
+		
+		if (matchInput.getMax_people() <= matchInput.getCount()) {
+			answer.setResponse("Fail : 이미 예약인원이 가득 찼습니다.");
+			return answer;
+		}
+			
+		if (sqlSession.selectOne("MatchesMapper.checkUserMatchDate", match_id) == null) {
+			answer.setResponse("Fail : 예약 가능한 기간이 아닙니다.");
+			return answer;
+		}
+		
 		UsersCash cashInput = new UsersCash();
 		
 		int participationFee = matchInput.getParticipation_fee();
@@ -313,37 +324,18 @@ public class UsersController {
 		}
 		
 		matchInput.setUsers_id(user.getId());
-		matchInput.setStatus("A");
 		cashInput.setUsers_id(user.getId());
 		cashInput.setBalance(user.getBalance() - participationFee);
 		cashInput.setPrice(participationFee);
 		
-		// 취소했다가 다시 예약하려고 할때
-		Matches checkMatch = sqlSession.selectOne("MatchesMapper.checkUserMatch", matchInput);
-		if (checkMatch != null) {
-			sqlSession.update("MatchesMapper.updateUserMatch", matchInput);
-			sqlSession.insert("UsersCashMapper.useCash", cashInput);
-			sqlSession.update("UsersCashMapper.changeUserBalance", cashInput);
-			
-			answer.setResponse("Success : 예약 되었습니다.");
-			return answer;
-		}
-		
-		//TODO Think 생각해봐라 유저의 update값을 balance만 받아서 해당값 바꿔주고 그대로 바꿔주면 되지 아니한가?
-		//TODO 재활용적인 측면에서 굉장히 유용하다
-		
-		//TODO 트랜젝션 ㅠㅠ 호다닥 공부 ㄱ
-		sqlSession.insert("MatchesMapper.createUserMatches", matchInput);
-		sqlSession.insert("UsersCashMapper.useCash", cashInput);
-		sqlSession.update("UsersCashMapper.changeUserBalance", cashInput);
-		
-		answer.setResponse("Success : 예약 되었습니다.");
+		// 예약 서비스
+		answer.setResponse(usersCashService.reservation(cashInput, matchInput));
 		return answer;
 	}
 	
 	// 매치 예약 취소
 	@RequestMapping(value="/cancle/{match_id}", method = RequestMethod.POST)
-	public Response cancle(
+	public Response cancleMatch(
 			@RequestHeader("accessToken") String accessToken,
 			@PathVariable("match_id") int match_id) {
 		
@@ -356,6 +348,11 @@ public class UsersController {
 			return answer;
 		}
 		
+		if (sqlSession.selectOne("MatchesMapper.checkUserMatchDate", match_id) == null) {
+			answer.setResponse("Fail : 취소기간이 지났습니다.");
+			return answer;
+		}
+		
 		Users user = sqlSession.selectOne("UsersMapper.selectUser", email);
 		
 		Matches matchInput = sqlSession.selectOne("MatchesMapper.selectMatch", match_id);
@@ -365,25 +362,12 @@ public class UsersController {
 		int participationFee = matchInput.getParticipation_fee();
 		
 		matchInput.setUsers_id(user.getId());
-		matchInput.setStatus("C");
 		cashInput.setUsers_id(user.getId());
 		cashInput.setBalance(user.getBalance() + participationFee);
 		cashInput.setPrice(participationFee);
 		
-		//TODO Think 생각해봐라 유저의 update값을 balance만 받아서 해당값 바꿔주고 그대로 바꿔주면 되지 아니한가?
-		//TODO 재활용적인 측면에서 굉장히 유용하다
-		
-		if (sqlSession.selectOne("MatchesMapper.checkUserMatchDate", match_id) == null) {
-			answer.setResponse("Fail : 취소기간이 지났습니다.");
-			return answer;
-		}
-		
-		//TODO 트랜젝션 ㅠㅠ 호다닥 공부 ㄱ
-		sqlSession.update("MatchesMapper.updateUserMatch", matchInput);
-		sqlSession.insert("UsersCashMapper.useCash", cashInput);
-		sqlSession.update("UsersCashMapper.changeUserBalance", cashInput);
-		
-		answer.setResponse("Success : 취소 되었습니다.");
+		// 예약 취소 서비스
+		answer.setResponse(usersCashService.reservation(cashInput, matchInput));
 		return answer;
 	}
 	
@@ -451,10 +435,11 @@ public class UsersController {
 		}
 	}
 	
-	//TODO 프론트에서 status 상태로 버튼 활성화 비활성화 해야됨
+	//TODO 프론트에서 status 상태로 버튼 활성화 비활성화 해야됨 status 값은 가지고오니까 프론트에서 ㄱ
+	// 취소때릴때 기간 지난것도 취소신청 비활성화 시키려면 무언가 조치를 취해야함. 일단 막아놓긴했음 버튼적인 의미에서임 << 안해도 무방함!
 	// 유저 매치 정보 호출
 	@RequestMapping(value="/my_matches" , method = RequestMethod.GET)
-	public List<Matches> getUserMatch(
+	public List<Matches> getUserMatches(
 			@RequestHeader("accessToken") String accessToken) {
 		
 		String email = AccessToken.getInstance().checkToken(accessToken);

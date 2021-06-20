@@ -28,7 +28,8 @@ public class Matches {
 	private String special_thing;		// 특이사항
 	private String area;				// 구장 지역
 	private String manager_name;		// 매니저 이름
-	private String phone_number;			// 매니저 핸드폰 번호
+	private String phone_number;		// 매니저 핸드폰 번호
 	private String birthday;			// 매니저 생일
 	private String greetings;			// 한마디
+	private int count;					// 해당 매치에 예약되어있는 사람 수
 }

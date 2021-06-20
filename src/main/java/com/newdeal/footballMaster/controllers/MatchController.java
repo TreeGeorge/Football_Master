@@ -19,15 +19,15 @@ public class MatchController {
 	SqlSession sqlSession;
 	
 	//TODO 매퍼 수정<< 필드정보값 뒤져서 해당 area값을 가진 친구들을 가져와야함
-//	// 필터링된 매치 정보리스트 가져오기
-//	@RequestMapping(value="/matches",method=RequestMethod.GET)
-//	public List<Match> getMatches(
-//			@RequestBody Match match) {
-//		
-//		List<Match> output = sqlSession.selectList("MatchMapper.selectMatches", match);
-//		
-//		return output;
-//	}
+	// 필터링된 매치 정보리스트 가져오기
+	@RequestMapping(value="/matches",method=RequestMethod.GET)
+	public List<Matches> getMatches(
+			@RequestBody Matches params) {
+		
+		List<Matches> output = sqlSession.selectList("MatchesMapper.selectMatches", params);
+		
+		return output;
+	}
 	
 	// 단일 매치 정보 가져오기
 	@RequestMapping(value="/matches/{id}",method=RequestMethod.GET)
@@ -38,5 +38,8 @@ public class MatchController {
 		
 		return output;
 	}
+	
+	// 해당 매치의 예약 인원 가져오기
+	
 
 }

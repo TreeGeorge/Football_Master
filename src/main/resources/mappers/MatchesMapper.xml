@@ -34,6 +34,7 @@
 		<result property="birthday" column="birthday" />
 		<result property="greetings" column="greetings" />
 		<result property="manager_name" column="manager_name" />
+		<result property="count" column="count" />
 		
     </resultMap>
 	
@@ -44,6 +45,7 @@
         SELECT HOUR(match_date) AS match_date,
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
+        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = #{id}) AS count,
         	   name
         FROM footballMaster.match m, field f
 		WHERE m.field_id = f.id
@@ -59,6 +61,7 @@
     <select id="selectMatch" parameterType="com.newdeal.footballMaster.model.Matches"
         resultMap="matchesMap">
         SELECT match_date,
+        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = #{id}) AS count,
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
         	   fields_id, m.id, f.name, managers_id, participation_fee, place, birthday, greetings,
@@ -90,9 +93,9 @@
     </select>
     
     <!-- 해당 유저의 매치 존재 유무 확인 -->
-    <select id="checkUserMatch" parameterType="com.newdeal.footballMaster.model.Matches"
-        resultMap="matchesMap">
-		SELECT id
+    <select id="checkUserMatchStatus" parameterType="com.newdeal.footballMaster.model.Matches"
+        resultType="String">
+		SELECT status
         FROM users_matches
 		WHERE users_id = #{users_id}
 		AND matches_id = #{id};
@@ -106,9 +109,9 @@
 	</insert> 
     
     <!-- 유저 매치 상태 변경 -->
-	<update id="updateUserMatch" parameterType="com.newdeal.footballMaster.model.Matches">
+	<update id="updateUserMatchCancle" parameterType="com.newdeal.footballMaster.model.Matches">
 		UPDATE users_matches 
-		SET status = #{status} 
+		SET status = #{status}
 		WHERE users_id = #{users_id}
 		AND matches_id = #{id};
 	</update> 

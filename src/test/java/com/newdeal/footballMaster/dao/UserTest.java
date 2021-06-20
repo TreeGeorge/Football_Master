@@ -3,19 +3,19 @@ package com.newdeal.footballMaster.dao;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
+//import org.apache.ibatis.session.SqlSession;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.newdeal.footballMaster.jwt.AccessToken;
-import com.newdeal.footballMaster.model.Users;
-import com.newdeal.footballMaster.model.UsersCash;
+//import com.newdeal.footballMaster.model.Users;
+//import com.newdeal.footballMaster.model.UsersCash;
 
 //import lombok.extern.slf4j.Slf4j;
 
@@ -39,8 +39,8 @@ public class UserTest {
 	
 	/** MyBatis의 SQL세션 주입 설정 */
 	// import org.springframework.beans.factory.annotation.Autowired;
-	@Autowired
-	private SqlSession sqlSession;
+//	@Autowired
+//	private SqlSession sqlSession;
 	
 	
 //	/** 단일행 조회 테스트 */

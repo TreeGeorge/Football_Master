@@ -23,8 +23,8 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.newdeal.footballMaster.controllers" />
-	<context:component-scan base-package="com.newdeal.footballMaster.service.impl" />
-	
+	<context:component-scan base-package="com.newdeal.footballMaster.service.impl" />	
+
 	
 	
 </beans:beans>
