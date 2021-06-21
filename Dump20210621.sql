@@ -40,46 +40,6 @@ INSERT INTO `banks` VALUES (1,'국민 은행'),(2,'기업 은행'),(3,'농협 �
 UNLOCK TABLES;
 
 --
--- Table structure for table `fields`
---
-
-DROP TABLE IF EXISTS `fields`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fields` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '구장 번호',
-  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '구장 이름',
-  `place` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '구장 장소',
-  `participation_fee` int NOT NULL DEFAULT '10000' COMMENT '참가비',
-  `man_to_man_rule` enum('A','B','C','D','E') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D' COMMENT '경기 인원 룰\nA = 3:3, B = 4:4, C = 5:5, D = 6:6, E = 7:7',
-  `floor_material` enum('G','U') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'G' COMMENT '경기장 바닥\\nG = 잔디, U = 우레탄',
-  `shose_rule` enum('F','E') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'F' COMMENT '신발 규칙\nF = 풋살화, E = 모든신발',
-  `min_people` int NOT NULL DEFAULT '6' COMMENT '최소 모집 인원수',
-  `max_people` int NOT NULL DEFAULT '21' COMMENT '최대 모집 인원수',
-  `size` varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '구장 크기',
-  `shower_room` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' COMMENT '샤워장 유무\nY = 있음, N = 없음',
-  `park` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y' COMMENT '주차 가능 여부\nY = 주차 가능, N = 주차 불가',
-  `shose_rent` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' COMMENT '신발 대여 가능 여부\nY = 가능, N = 불가능',
-  `clothes_rent` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' COMMENT '운동복 대여 가능 여부\nY = 가능, N = 불가능',
-  `special_thing` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '특이사항',
-  `area` enum('A','B','C','D','E','F','G','H','I','J','K','L','M') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'A' COMMENT '구장 서비스 지역\\\\nA = 서울, B = 경기, C = 인천, D = 대전,  E = 대구, F = 부산, G = 울산, H = 광주, I = 충북, J = 경북, K = 전북, L = 충남, M = 경남',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '구장 등록 시간',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fields`
---
-
-LOCK TABLES `fields` WRITE;
-/*!40000 ALTER TABLE `fields` DISABLE KEYS */;
-INSERT INTO `fields` VALUES (1,'용산 아이파크몰 (1구장/레알)','서울 용산구 한강대로23길 55',10000,'D','G','F',10,16,'40x20m','N','Y','N','N','임시','A','2021-06-10 14:42:27',NULL),(2,'인천 송도 트리플 스트리트 풋살장 A구장','인천 연수구 송도과학로16번길 33-3 C동 3F',10000,'D','G','F',10,16,'30x20m','N','Y','N','N','임시','C','2021-06-10 14:42:27',NULL),(3,'부산 팔라시오FC 해운대 풋살장 A구장','부산 해운대구 좌동순환로 395',10000,'D','G','F',10,16,'40x20m','N','Y','Y','N','임시','H','2021-06-10 14:42:27',NULL);
-/*!40000 ALTER TABLE `fields` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `managers`
 --
 
@@ -89,7 +49,7 @@ DROP TABLE IF EXISTS `managers`;
 CREATE TABLE `managers` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '매니저 번호',
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '매니저의 이름',
-  `phone_number` varchar(20) NOT NULL COMMENT '매니저 핸드폰 번호',
+  `phone_number` varchar(11) NOT NULL COMMENT '매니저 핸드폰 번호',
   `birthday` date NOT NULL COMMENT '매니저의 생년월일',
   `greetings` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '자기 소개말',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -122,12 +82,12 @@ CREATE TABLE `matches` (
   `level` enum('L','M','H') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'L' COMMENT '모집하는 선수의 실력\nL = 1~3, M = 2~3, H = 3',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `fields_id` int DEFAULT NULL,
+  `stadiums_id` int DEFAULT NULL,
   `managers_id` int DEFAULT NULL COMMENT '매니저 번호',
   PRIMARY KEY (`id`),
-  KEY `fk_match_field1_idx` (`fields_id`),
+  KEY `fk_match_field1_idx` (`stadiums_id`),
   KEY `fk_match_manager1_idx` (`managers_id`),
-  CONSTRAINT `fk_matches_fields_id` FOREIGN KEY (`fields_id`) REFERENCES `fields` (`id`),
+  CONSTRAINT `fk_matches_fields_id` FOREIGN KEY (`stadiums_id`) REFERENCES `stadiums` (`id`),
   CONSTRAINT `fk_matches_managers_id` FOREIGN KEY (`managers_id`) REFERENCES `managers` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -140,6 +100,46 @@ LOCK TABLES `matches` WRITE;
 /*!40000 ALTER TABLE `matches` DISABLE KEYS */;
 INSERT INTO `matches` VALUES (1,'2021-07-05 12:00:00','F','L','2021-06-10 15:15:48','2021-06-14 13:13:51',1,1),(2,'2021-07-12 00:00:00','H','L','2021-06-10 15:15:48',NULL,2,2),(3,'2021-07-05 15:00:00','M','M','2021-06-10 15:15:48','2021-06-14 13:13:51',1,1),(4,'2021-07-08 15:00:00','F','L','2021-06-10 15:15:48','2021-06-14 13:13:51',1,1),(5,'2021-05-01 00:00:00','H','L','2021-06-18 16:36:54','2021-06-18 16:36:54',1,1);
 /*!40000 ALTER TABLE `matches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `stadiums`
+--
+
+DROP TABLE IF EXISTS `stadiums`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `stadiums` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '구장 번호',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '구장 이름',
+  `location` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '구장 장소',
+  `participation_fee` int NOT NULL DEFAULT '10000' COMMENT '참가비',
+  `man_to_man_rule` enum('A','B','C','D','E') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D' COMMENT '경기 인원 룰\nA = 3:3, B = 4:4, C = 5:5, D = 6:6, E = 7:7',
+  `floor_material` enum('G','U') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'G' COMMENT '경기장 바닥\\nG = 잔디, U = 우레탄',
+  `shose_rule` enum('F','E') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'F' COMMENT '신발 규칙\nF = 풋살화, E = 모든신발',
+  `min_people` int NOT NULL DEFAULT '6' COMMENT '최소 모집 인원수',
+  `max_people` int NOT NULL DEFAULT '21' COMMENT '최대 모집 인원수',
+  `size` varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '구장 크기',
+  `shower_room` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' COMMENT '샤워장 유무\nY = 있음, N = 없음',
+  `park` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y' COMMENT '주차 가능 여부\nY = 주차 가능, N = 주차 불가',
+  `shose_rent` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' COMMENT '신발 대여 가능 여부\nY = 가능, N = 불가능',
+  `clothes_rent` enum('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' COMMENT '운동복 대여 가능 여부\nY = 가능, N = 불가능',
+  `special_thing` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '특이사항',
+  `region` enum('A','B','C','D','E','F','G','H','I','J','K','L','M') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'A' COMMENT '구장 서비스 지역\\\\\\\\nA = 서울, B = 경기, C = 인천, D = 대전,  E = 대구, F = 부산, G = 울산, H = 광주, I = 충북, J = 경북, K = 전북, L = 충남, M = 경남',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '구장 등록 시간',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `stadiums`
+--
+
+LOCK TABLES `stadiums` WRITE;
+/*!40000 ALTER TABLE `stadiums` DISABLE KEYS */;
+INSERT INTO `stadiums` VALUES (1,'용산 아이파크몰 (1구장/레알)','서울 용산구 한강대로23길 55',10000,'D','G','F',10,16,'40x20m','N','Y','N','N','임시','A','2021-06-10 14:42:27',NULL),(2,'인천 송도 트리플 스트리트 풋살장 A구장','인천 연수구 송도과학로16번길 33-3 C동 3F',10000,'D','G','F',10,16,'30x20m','N','Y','N','N','임시','C','2021-06-10 14:42:27',NULL),(3,'부산 팔라시오FC 해운대 풋살장 A구장','부산 해운대구 좌동순환로 395',10000,'D','G','F',10,16,'40x20m','N','Y','Y','N','임시','H','2021-06-10 14:42:27',NULL);
+/*!40000 ALTER TABLE `stadiums` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -192,7 +192,7 @@ CREATE TABLE `users_banks` (
   PRIMARY KEY (`id`),
   KEY `fk_user_bank_bank1_idx` (`banks_id`),
   KEY `fk_user_id_idx` (`users_id`),
-  CONSTRAINT `fk_users_banks_banks_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_users_banks_banks_id` FOREIGN KEY (`banks_id`) REFERENCES `banks` (`id`),
   CONSTRAINT `fk_users_banks_users_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -256,7 +256,7 @@ CREATE TABLE `users_matches` (
   KEY `fk_user_id_idx` (`users_id`),
   CONSTRAINT `fk_users_matches_matches_id` FOREIGN KEY (`matches_id`) REFERENCES `matches` (`id`),
   CONSTRAINT `fk_users_matches_users_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +265,7 @@ CREATE TABLE `users_matches` (
 
 LOCK TABLES `users_matches` WRITE;
 /*!40000 ALTER TABLE `users_matches` DISABLE KEYS */;
-INSERT INTO `users_matches` VALUES (1,1,1,'C','2021-06-10 15:16:39','2021-06-18 16:05:49'),(2,2,1,'A','2021-06-10 15:16:39',NULL),(3,5,1,'A','2021-06-18 16:37:39','2021-06-18 16:42:21');
+INSERT INTO `users_matches` VALUES (1,1,1,'C','2021-06-10 15:16:39','2021-06-18 16:05:49'),(2,2,1,'A','2021-06-10 15:16:39',NULL),(3,5,1,'A','2021-06-18 16:37:39','2021-06-18 16:42:21'),(4,2,2,'A','2021-06-21 01:24:22','2021-06-21 01:24:22');
 /*!40000 ALTER TABLE `users_matches` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -278,4 +278,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-18 17:01:12
+-- Dump completed on 2021-06-21 10:40:48

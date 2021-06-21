@@ -92,7 +92,7 @@ public class UsersController {
 				input.setPhone_number(user.getPhone_number());
 			}
 			//TODO 오우 아니야 그냥 계좌 정보도 여기서 수정하게 하셈! 걍 정보 받아서 넣어주는거임! 생성도 받은정보로 생성떄리면댐!
-			//TODO 그렇게해서 부르는거임 환불때 계좌정보 입력 시키는것도! 이걸!! 하 하
+			//TODO 그렇게해서 부르는거임 환불때 계좌정보 입력 시키는것도! 이걸!! 하 하 << 이렇게하려면 users에 뱅크정보를 저장해야되는데.. 흠..
 			// 어짜피 보유 금액보다 적으면 환불 못하니까 환불 불러도 작동 안함
 			if (sqlSession.selectOne("UsersBanksMapper.selectUserBank", input.getId()) == null) {
 				// 유저의 환불계좌 정보가 없을시 생성
@@ -304,12 +304,12 @@ public class UsersController {
 			return answer;
 		}
 		
-		if (matchInput.getMax_people() <= matchInput.getCount()) {
+		if (matchInput.getMax_people() <= matchInput.getApplicantCount()) {
 			answer.setResponse("Fail : 이미 예약인원이 가득 찼습니다.");
 			return answer;
 		}
 			
-		if (sqlSession.selectOne("MatchesMapper.checkUserMatchDate", match_id) == null) {
+		if (sqlSession.selectOne("MatchesMapper.checkMatchDate", match_id) == null) {
 			answer.setResponse("Fail : 예약 가능한 기간이 아닙니다.");
 			return answer;
 		}
@@ -348,7 +348,7 @@ public class UsersController {
 			return answer;
 		}
 		
-		if (sqlSession.selectOne("MatchesMapper.checkUserMatchDate", match_id) == null) {
+		if (sqlSession.selectOne("MatchesMapper.checkMatchDate", match_id) == null) {
 			answer.setResponse("Fail : 취소기간이 지났습니다.");
 			return answer;
 		}

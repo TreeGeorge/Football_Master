@@ -19,6 +19,7 @@ public class MatchController {
 	SqlSession sqlSession;
 	
 	//TODO 매퍼 수정<< 필드정보값 뒤져서 해당 area값을 가진 친구들을 가져와야함
+	//TODO 지역별 필요
 	// 필터링된 매치 정보리스트 가져오기
 	@RequestMapping(value="/matches",method=RequestMethod.GET)
 	public List<Matches> getMatches(
@@ -38,8 +39,6 @@ public class MatchController {
 		
 		return output;
 	}
-	
-	// 해당 매치의 예약 인원 가져오기
 	
 
 }
