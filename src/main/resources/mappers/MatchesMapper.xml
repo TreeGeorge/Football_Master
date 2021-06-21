@@ -35,32 +35,81 @@
 		<result property="greetings" column="greetings" />
 		<result property="manager_name" column="manager_name" />
 		<result property="applicantCount" column="applicantCount" />
+		<result property="day_of_week" column="day_of_week" />
 		
     </resultMap>
 	
 	<!-- 매치 정보 가져오기 -->
-	<!--
-    <select id="selectMatches" parameterType="com.newdeal.footballMaster.model.Match"
-        resultMap="matchMap">
-        SELECT HOUR(match_date) AS match_date,
+	<select id="selectMatches" parameterType="com.newdeal.footballMaster.model.Matches"
+        resultMap="matchesMap">
+        SELECT HOUR(match_date) AS match_date, max_people,
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
-        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = #{id}) AS applicantCount,
+        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
         	   name
-        FROM footballMaster.match m, field f
-		WHERE m.field_id = f.id
-		AND gender_rule IN #{gender_rule}
-		AND level IN #{level}
+        FROM matches m, stadiums s
+		WHERE m.stadiums_id = s.id
+		AND gender_rule IN ${gender_rule}
+		AND level IN ${level}
 		AND region = #{region}
-		AND match_date BETWEEN #{day}000000 AND #{day}235959
+		AND match_date BETWEEN ${match_date}000000 AND ${match_date}235959
+		AND match_date > now()
 		ORDER BY match_date; 
     </select>
-    -->
+    
+    <!-- 레벨별 매치 정보 가져오기 -->
+    <select id="selectLevelMatches" parameterType="com.newdeal.footballMaster.model.Matches"
+        resultMap="matchesMap">
+        SELECT date_format(match_date, '%m월 %d일 %H:%i') AS match_date, max_people,
+        	   SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(match_date), 1) AS day_of_week,
+        	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
+        	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
+        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
+        	   name
+        FROM matches m, stadiums s
+		WHERE m.stadiums_id = s.id
+		AND level = #{level}
+		AND match_date BETWEEN now() AND DATE_ADD(now(), INTERVAL 4 WEEK)
+		ORDER BY match_date; 
+    </select>
+    
+    <!-- 성별별 매치 정보 가져오기 -->
+    <select id="selectGenderMatches" parameterType="com.newdeal.footballMaster.model.Matches"
+        resultMap="matchesMap">
+        SELECT date_format(match_date, '%m월 %d일 %H:%i') AS match_date, max_people,
+        	   SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(match_date), 1) AS day_of_week,
+        	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
+        	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
+        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
+        	   name
+        FROM matches m, stadiums s
+		WHERE m.stadiums_id = s.id
+		AND gender_rule = #{gender_rule}
+		AND match_date BETWEEN now() AND DATE_ADD(now(), INTERVAL 4 WEEK)
+		ORDER BY match_date; 
+    </select>
+    
+    <!-- 지역별 매치 정보 가져오기 -->
+    <select id="selectRegionMatches" parameterType="com.newdeal.footballMaster.model.Matches"
+        resultMap="matchesMap">
+        SELECT date_format(match_date, '%m월 %d일 %H:%i') AS match_date, max_people,
+        	   SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(match_date), 1) AS day_of_week,
+        	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
+        	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
+        	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
+        	   name
+        FROM matches m, stadiums s
+		WHERE m.stadiums_id = s.id
+		AND region = #{region}
+		AND match_date BETWEEN now() AND DATE_ADD(now(), INTERVAL 4 WEEK)
+		ORDER BY match_date; 
+    </select>
     
     <!-- 단일 매치 정보 가져오기 -->
     <select id="selectMatch" parameterType="com.newdeal.footballMaster.model.Matches"
         resultMap="matchesMap">
-        SELECT match_date,
+        SELECT date_format(match_date, '%m월 %d일 %H:%i') AS match_date,
+        	   SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(match_date), 1) AS day_of_week,
         	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = #{id}) AS applicantCount,
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,

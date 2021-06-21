@@ -13,7 +13,7 @@ public class Matches {
 	private int users_id;				// 유저 프라이머리 키
 	private String status;				// 유저의 매치 취소 상태
 	private String name;				// 구장 이름
-	private String location;				// 구장 장소
+	private String location;			// 구장 장소
 	private int participation_fee;		// 참가비
 	private String man_to_man_rule;		// 인원수 룰
 	private String floor_material;		// 바닥 재질
@@ -32,4 +32,5 @@ public class Matches {
 	private String birthday;			// 매니저 생일
 	private String greetings;			// 한마디
 	private int applicantCount;			// 해당 매치에 신청자
+	private String day_of_week;			// 해당 매치 요일
 }

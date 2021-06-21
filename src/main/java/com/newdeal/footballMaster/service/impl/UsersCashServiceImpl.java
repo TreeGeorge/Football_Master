@@ -76,9 +76,6 @@ public class UsersCashServiceImpl implements UsersCashService{
 				return output;
 			}
 			
-			//TODO Think 생각해봐라 유저의 update값을 balance만 받아서 해당값 바꿔주고 그대로 바꿔주면 되지 아니한가?
-			//TODO 재활용적인 측면에서 굉장히 유용하다
-			
 			sqlSession.insert("MatchesMapper.createUserMatches", matchInput);
 			sqlSession.insert("UsersCashMapper.useCash", cashInput);
 			sqlSession.update("UsersCashMapper.changeUserBalance", cashInput);
@@ -109,9 +106,6 @@ public class UsersCashServiceImpl implements UsersCashService{
 		matchInput.setStatus("C");
 		
 		try {
-			
-			//TODO Think 생각해봐라 유저의 update값을 balance만 받아서 해당값 바꿔주고 그대로 바꿔주면 되지 아니한가?
-			//TODO 재활용적인 측면에서 굉장히 유용하다
 			
 			sqlSession.update("MatchesMapper.updateUserMatch", matchInput);
 			sqlSession.insert("UsersCashMapper.withdrawalCash", cashInput);

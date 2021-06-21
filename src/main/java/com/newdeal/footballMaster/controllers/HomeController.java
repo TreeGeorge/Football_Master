@@ -113,10 +113,18 @@ public class HomeController {
 //			@RequestParam(value="area") String area,
 //			@RequestParam(value="day") String day) {
 //		
-//		MatchFilter input = new MatchFilter();
+//		Matches input = new Matches();
 //		
 //		String genderRule = "";
 //		String level = "";
+//	
+//	for (int i = 0 ; i < paramas.length ; i ++) {
+//		if (params[i].equals("Male")) {
+//			String temp = params[0];
+//			params[i] = temp;
+//			params[0] = "Male";
+//		}
+//	}
 //		
 //		// 성별 파라미터값 분별후 쿼리문으로 전송
 //		// Male, Female, Mix
