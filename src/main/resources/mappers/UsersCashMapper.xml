@@ -22,7 +22,7 @@
         resultMap="usersCashMap">
         SELECT IF(type='C', '충전', IF(type='R', '환불', IF(type='U', '사용', '결제 취소'))) AS type, price, c.created_at, balance
         FROM users u, users_cash c
-        WHERE u.id = c.user_id
+        WHERE u.id = c.users_id
 		AND users_id = #{users_id};
     </select>
     

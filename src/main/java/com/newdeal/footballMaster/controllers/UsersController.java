@@ -2,8 +2,6 @@ package com.newdeal.footballMaster.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,10 +28,11 @@ public class UsersController {
 	@Autowired
 	UsersCashService usersCashService;
 	
+	//TODO 로그를 남겨라
 	// 단일 유저 정보 호출
 	@RequestMapping(value="/my", method = RequestMethod.GET)
 	public Users getUser(
-			@RequestHeader("accessToken") String accessToken) {
+			@RequestHeader(value="accessToken", required=false) String accessToken) {
 		
 		String email = AccessToken.getInstance().checkToken(accessToken);
 		
@@ -51,7 +50,7 @@ public class UsersController {
 	// 유저 정보 변경
 	@RequestMapping(value="/users" , method = RequestMethod.PUT)
 	public Response updateUser(
-			@RequestHeader("accessToken") String accessToken,
+			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@RequestBody final Users user) {
 		
 		Response answer = new Response();
@@ -91,13 +90,6 @@ public class UsersController {
 			if (user.getPhone_number() != null) {
 				input.setPhone_number(user.getPhone_number());
 			}
-			//TODO 오우 아니야 그냥 계좌 정보도 여기서 수정하게 하셈! 걍 정보 받아서 넣어주는거임! 생성도 받은정보로 생성떄리면댐!
-			//TODO 그렇게해서 부르는거임 환불때 계좌정보 입력 시키는것도! 이걸!! 하 하 << 이렇게하려면 users에 뱅크정보를 저장해야되는데.. 흠..
-			// 어짜피 보유 금액보다 적으면 환불 못하니까 환불 불러도 작동 안함
-			if (sqlSession.selectOne("UsersBanksMapper.selectUserBank", input.getId()) == null) {
-				// 유저의 환불계좌 정보가 없을시 생성
-				sqlSession.insert("UsersBanksMapper.createUserBank", input.getId());
-			}
 			
 			sqlSession.update("UsersMapper.updateUser", input);
 			
@@ -109,7 +101,7 @@ public class UsersController {
 	// 유저 삭제
 	@RequestMapping(value="/users", method = RequestMethod.DELETE)
 	public Response deleteUser(
-			@RequestHeader("accessToken") String accessToken) {
+			@RequestHeader(value="accessToken", required=false) String accessToken) {
 		
 		Response answer = new Response();
 		
@@ -143,9 +135,8 @@ public class UsersController {
 	// 유저 생성 및 로그인 ( 소셜로그인이 완료된 뒤에 작동 )
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public Response login(
-			HttpSession session,
 			@RequestBody final Users user) {
-		
+
 		Response answer = new Response();
 		
 		String email = user.getEmail();
@@ -154,32 +145,27 @@ public class UsersController {
 			answer.setResponse("Fail : 이메일이 유효하지 않습니다.");
 			return answer;
 		} else if (sqlSession.selectOne("UsersMapper.selectUser", email) != null){
-			AccessToken.getInstance().creatToken(session, email);
-			answer.setResponse("Success : 로그인 되었습니다.");
+			answer.setAccessToken(AccessToken.getInstance().creatToken(email));
+			answer.setResponse("Success : 토큰이 발급되었습니다.");
 			return answer;
 		} else {
 			sqlSession.insert("UsersMapper.createUser", email);
-			AccessToken.getInstance().creatToken(session, email);
-			answer.setResponse("Success : 회원가입 및 로그인 되었습니다.");
+			Users input = sqlSession.selectOne("UsersMapper.selectUser", email);
+			sqlSession.insert("UsersBanksMapper.createUserBank", input.getId());
+			answer.setAccessToken(AccessToken.getInstance().creatToken(email));
+			answer.setResponse("Success : 회원가입 및 토큰이 발급되었습니다.");
 			return answer;
 		}
 			
 	}
 	
 	// 로그아웃
-	// 세션을 제거하는것이므로 소셜 로그아웃은 프론트에서 해야함(소셜 로그아웃 시키면서 호출하면 좋음)
-	// 굳이 소셜 로그아웃을 안하고 로그인 버튼 재 선택시 그냥 재 로그인 되게 하면 되긴함.. << 하지만 이렇게하면 호출 타이밍이.. 공부하자
 	@RequestMapping(value="/logout",method=RequestMethod.GET)
-	public Response logout(HttpSession session) { 
+	public Response logout() { 
 		
 		Response answer = new Response();
-		
-		if (session.getAttribute("accessToken") == null) {
-			answer.setResponse("Fail : 로그인 상태가 아닙니다.");
-		}
-		
-		session.setAttribute("accessToken", null);
-		session.invalidate();
+
+		//TODO 할것이 없더라도 로그를 남기기
 		
 		answer.setResponse("Success : 로그아웃 되었습니다.");
 		return answer;
@@ -188,7 +174,7 @@ public class UsersController {
 	// 유저 캐시 사용내역 호출
 	@RequestMapping(value="/my_cash", method = RequestMethod.GET)
 	public List<UsersCash> getUserCash(
-			@RequestHeader("accessToken") String accessToken) {
+			@RequestHeader(value="accessToken", required=false) String accessToken) {
 		
 		String email = AccessToken.getInstance().checkToken(accessToken);
 		
@@ -208,7 +194,7 @@ public class UsersController {
 	// 유저 캐시 충전
 	@RequestMapping(value="/cash_charge", method = RequestMethod.POST)
 	public Response userCashCharge(
-			@RequestHeader("accessToken") String accessToken,
+			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@RequestBody final UsersCash userCash) {
 		
 		Response answer = new Response();
@@ -243,7 +229,7 @@ public class UsersController {
 	// 유저 캐시 환불
 	@RequestMapping(value="/cash_refund", method = RequestMethod.POST)
 	public Response userCashRefund(
-			@RequestHeader("accessToken") String accessToken,
+			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@RequestBody final UsersCash userCash) {
 		
 		Response answer = new Response();
@@ -336,7 +322,7 @@ public class UsersController {
 	// 매치 예약 취소
 	@RequestMapping(value="/cancle/{match_id}", method = RequestMethod.POST)
 	public Response cancleMatch(
-			@RequestHeader("accessToken") String accessToken,
+			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@PathVariable("match_id") int match_id) {
 		
 		Response answer = new Response();
@@ -374,7 +360,7 @@ public class UsersController {
 	// 유저 환불 계좌 정보 호출
 	@RequestMapping(value="/my_bank" , method = RequestMethod.GET)
 	public UsersBanks getUserBank(
-			@RequestHeader("accessToken") String accessToken) {
+			@RequestHeader(value="accessToken", required=false) String accessToken) {
 		
 		String email = AccessToken.getInstance().checkToken(accessToken);
 		
@@ -393,7 +379,7 @@ public class UsersController {
 	// 유저 환불 계좌 정보 변경
 	@RequestMapping(value="/my_bank" , method = RequestMethod.PUT)
 	public Response updateUserBank(
-			@RequestHeader("accessToken") String accessToken,
+			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@RequestBody final UsersBanks userBank) {
 		
 		Response answer = new Response();
@@ -440,7 +426,7 @@ public class UsersController {
 	// 유저 매치 정보 호출
 	@RequestMapping(value="/my_matches" , method = RequestMethod.GET)
 	public List<Matches> getUserMatches(
-			@RequestHeader("accessToken") String accessToken) {
+			@RequestHeader(value="accessToken", required=false) String accessToken) {
 		
 		String email = AccessToken.getInstance().checkToken(accessToken);
 		

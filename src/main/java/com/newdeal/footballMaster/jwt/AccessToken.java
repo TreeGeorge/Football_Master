@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -106,12 +104,13 @@ public class AccessToken {
 		return null;
 	}
     
-    public void creatToken(HttpSession session, String email) {
+    public String creatToken(String email) {
 		
 		AccessToken createToken = new AccessToken();
 		String accessToken = createToken.createToken(email);
 		
-		session.setAttribute("accessToken", accessToken);
+//		session.setAttribute("accessToken", accessToken);
+		return accessToken;
 	}
    
 }

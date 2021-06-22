@@ -29,7 +29,7 @@
     
     <!-- 유저 환불 계좌 생성 -->
 	<insert id="createUserBank" parameterType="com.newdeal.footballMaster.model.UsersBanks"
-	useGeneratedKeys="true" keyProperty="id">
+	useGeneratedKeys="false" keyProperty="id">
 		INSERT INTO users_banks (users_id, banks_id)
 		VALUES (#{users_id}, 1);
 	</insert> 

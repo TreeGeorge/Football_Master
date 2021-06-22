@@ -4,11 +4,11 @@
 <head>
 	<meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="852386834583-rqsk6ce3b7d5r3vm0f3fj72211trgh6g.apps.googleusercontent.com">
+    <!-- (1) LoginWithNaverId Javscript SDK -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 	<title>Home</title>
 	<meta charset='utf-8' />
 	<link rel="stylesheet" href="assets/plugins/sweetalert/sweetalert2.min.css">
-	<link rel="stylesheet" href="assets/plugins/ajax/ajax_helper.css">
 </head>
 <body>
 <h1>
@@ -16,14 +16,29 @@
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>
-
+  <!-- 네이버아이디로로그인 버튼 노출 영역 -->
+<div id="naverIdLogin"></div>
 <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
 <button type="button" onclick="signOut();">로그아웃</button>
 <a href="javascript:kakaoLogin()"><img src="https://www.gb.go.kr/Main/Images/ko/member/certi_kakao_login.png" /></a>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="assets/js/jquery-3.5.1.min.js"></script>
 <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
-<script src="assets/plugins/ajax/ajax_helper.js"></script>
+
+<script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
+  <script type="text/javascript">
+  	var naverLogin = new naver.LoginWithNaverId(
+  			{
+  				clientId: "fVWpyHFN5yLxAUXa4chY",
+  				callbackUrl: "http://localhost:8080/footballMaster/naver_callback",
+  				isPopup: false, /* 팝업을 통한 연동처리 여부 */
+  				loginButton: {color: "green", type: 3, height: 60} /* 로그인 버튼의 타입을 지정 */
+  			}
+  		);
+  		
+  	/* 설정정보를 초기화하고 연동을 준비 */
+  	naverLogin.init();
+  </script>
 <script>
 	//067eac8fe2c1a4d95ccddfdc2ab86007
 	window.Kakao.init("067eac8fe2c1a4d95ccddfdc2ab86007");
@@ -75,30 +90,6 @@
         var email_value = profile.getEmail();
         
 
-        $.post('signInUser.do',{email:email_value},function(req){
-            if(req == 1){
-            	swal({
-                    html: "<b>회원가입을 축하드립니다.</b>",    // 내용
-                    type: "success",  // 종류
-                    confirmButtonText: "확인", // 확인버튼 표시 문구
-                    confirmButtonColor: "#ff3253", // 확인버튼 색상
-                }).then(function(){
-                	$(location).attr('href','/footballMaster');
-                });
-            }else if (req == 0){
-            	swal({
-                    html: "<b>이미 가입되어있는 아이디 입니다.</b>",    // 내용
-                    type: "error",  // 종류
-                    confirmButtonText: "확인", // 확인버튼 표시 문구
-                    confirmButtonColor: "#ff3253", // 확인버튼 색상
-                }).then(function(){
-             //   	$(location).attr('href','/footballMaster');
-                });
-            }
-        });
-        // The ID token you need to pass to your backend:
-        // var id_token = googleUser.getAuthResponse().id_token;
-        // console.log("ID Token: " + id_token);
     }
       
     function signOut() {    // 소셜 로그인 타입을 저장해놓고 해당 타입을 불러와서 if 조건문안에 넣어주기

@@ -44,7 +44,7 @@
     
     <!-- 유저 생성 -->
 	<insert id="createUser" parameterType="com.newdeal.footballMaster.model.Users"
-	useGeneratedKeys="true" keyProperty="id">
+	useGeneratedKeys="false" keyProperty="id">
 		INSERT INTO users (email)
 		VALUES (#{email});
 	</insert> 

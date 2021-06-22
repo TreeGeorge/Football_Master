@@ -81,6 +81,19 @@ public class HomeController {
 		
 		return "home";
 	}
+	@RequestMapping(value = {"/naver_callback"}, method = {RequestMethod.GET, RequestMethod.POST})
+	public String naverCallback(Locale locale, Model model, HttpServletResponse response, HttpSession session) {
+
+		
+		return "/naver_callback";
+	}
+	
+	@RequestMapping(value = {"/test"}, method = {RequestMethod.GET, RequestMethod.POST})
+	public String test(Locale locale, Model model, HttpServletResponse response, HttpSession session) {
+
+		
+		return "/test";
+	}
 //	
 //	// 로그인
 //	@ResponseBody
