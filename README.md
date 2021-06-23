@@ -25,7 +25,7 @@ FootballMaster 서비스는 장소 대여 및 공유 플랫폼으로서
 
 # Database Schema
 
-![이미지](https://forum.level1techs.com/uploads/default/original/3X/6/c/6c32dba4a64ebb410ae24e0e0446302b0b82f188.png)
+![이미지](https://user-images.githubusercontent.com/84691802/123033074-19195800-d422-11eb-8349-5752f934457f.png)
 
 # 개발 환경
 
