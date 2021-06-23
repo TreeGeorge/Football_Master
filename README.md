@@ -40,6 +40,18 @@ FootballMaster 서비스는 장소 대여 및 공유 플랫폼으로서
 # API 목록
 
 [API 상세](https://github.com/TreeGeorge/Football_master/blob/master/api.md)
+- GET /matches
+- GET /$filter/{id}/matches
 - GET /matches/{id}
-- GET /users
-- POST /users
+- GET /my
+- PUT /users
+- DELETE /users
+- POST /login
+- GET /logout
+- POST /cash_charge
+- POST /cash_refund
+- POST /reservation/{match_id}
+- POST /cancel/{match_id}
+- GET /my_bank
+- PUT /my_bank
+- GET /my_matches
