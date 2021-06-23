@@ -39,7 +39,7 @@ FootballMaster 서비스는 장소 대여 및 공유 플랫폼으로서
 
 # API 목록
 
-[API 상세]()
-- GET /products/{id}
+[API 상세](https://github.com/TreeGeorge/Football_master/blob/master/api.md)
+- GET /matches/{id}
 - GET /users
 - POST /users
