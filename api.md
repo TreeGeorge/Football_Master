@@ -172,6 +172,7 @@ Name |Type| Description
 user_id||int|유저 아이디를 조회하여 삭제한다
 
 ###Response
+
 <br>
 
 ```
@@ -228,6 +229,7 @@ accessToken|String| 쿠키에서 JWT를 삭제하여 로그아웃한다
 ```
 POST /cash_charge
 ```
+
 ### RequestHeader
 Name|Type|Description
 accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
@@ -369,7 +371,9 @@ day_of_week|String| 해당 매치 진행 요일 정보를 저장한다
 ```
 POST /cancel/{match_id}
 ```
+
 ### RequestHeader
+
 Name|Type|Description
 accessToken|String|토큰값을 비교해 해당 유저가 예약한 매치 정보를 가져옵니다.
 
@@ -393,7 +397,9 @@ match_id|int| 매치 id 값에 해당하는 매치 예약 정보를 삭제합니
 ```
 GET /my_bank
 ```
+
 ### RequestHeader
+
 Name|Type|Description
 accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
@@ -421,11 +427,14 @@ name |String| 은행의 이름정보를 조회한다
 ```
 PUT /my_bank
 ```
+
 ### RequestHeader
+
 Name|Type|Description
 accessToken|String|토큰을 발급해 해당 유저의 계좌 정보를 가져옵니다.
 
 ### RequestParam
+<br>
 
 Name|Type|Description
 user_id|int| id 값에 해당하는 계좌번호정보를 조회한다
@@ -449,6 +458,7 @@ GET /my_matches
 ```
 
 ### RequestParams
+<br>
 
 Name|Type|Description
 user_id|int| id 값에 해당하는 매칭정보를 조회한다
