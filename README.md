@@ -16,7 +16,7 @@ FootballMaster 서비스는 장소 대여 및 공유 플랫폼으로서
 
 # 프로젝트 기획안
 
-[![이미지](https://user-images.githubusercontent.com/84691802/123193656-23019080-d4e0-11eb-8783-9453e8a8b9bd.png)](https://github.com/TreeGeorge/Football_master/blob/master/Football-Master.pdf)
+[![이미지](https://user-images.githubusercontent.com/84691802/123193656-23019080-d4e0-11eb-8783-9453e8a8b9bd.png)](https://www.miricanvas.com/v/1ga38d)
 
 # 서비스 구조
 
