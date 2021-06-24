@@ -110,7 +110,9 @@ id	|int| 해당 id의 소셜매칭정보를 조회합니다
 GET /my
 ```
 ### RequestHeader
+
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰을 통해 해당 유저의 정보를 가져옵니다.
 <br>
 
@@ -137,8 +139,10 @@ PUT /users
 ```
 ### RequestHeader
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰정보를 확인하여 유저 정보를 확인합니다.
 <br>
+
 ### RequestParams
 <br>
 
@@ -232,6 +236,7 @@ POST /cash_charge
 
 ### RequestHeader
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
 ### RequestParam
@@ -262,6 +267,7 @@ POST /cash_refund
 
 ### RequestHeader
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
 ### RequestParam
@@ -375,12 +381,14 @@ POST /cancel/{match_id}
 ### RequestHeader
 
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰값을 비교해 해당 유저가 예약한 매치 정보를 가져옵니다.
 
 ### RequestParam
 <br>
 
 Name|Type|Description
+---- |----| ---- 
 match_id|int| 매치 id 값에 해당하는 매치 예약 정보를 삭제합니다.
 
 ### Response
@@ -401,6 +409,7 @@ GET /my_bank
 ### RequestHeader
 
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
 ### RequestParam
@@ -431,6 +440,7 @@ PUT /my_bank
 ### RequestHeader
 
 Name|Type|Description
+---- |----| ---- 
 accessToken|String|토큰을 발급해 해당 유저의 계좌 정보를 가져옵니다.
 
 ### RequestParam
@@ -461,6 +471,7 @@ GET /my_matches
 <br>
 
 Name|Type|Description
+---- |----| ---- 
 user_id|int| id 값에 해당하는 매칭정보를 조회한다
 match_dats|String| 매칭 날짜 정보를 조회한다
 participation_fee|int| 매칭에 필요한 참가비를 조회한다
