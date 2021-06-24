@@ -80,7 +80,7 @@ Name 		|Type| Description
 ---- 		|----| ---- 
 id	|int| 해당 id의 소셜매칭정보를 조회합니다
 
-###Response
+### Response
 <br>
 
 ```
@@ -153,7 +153,7 @@ gender	|enum| 유저의 성별 정보를 변경합니다.
 birthday|date| 유저의 생일 정보를 변경합니다.
 phone_number|int| 유저의 휴대전화 정보를 변경합니다.
 
-###Response
+### Response
 <br>
 
 ```
@@ -219,7 +219,7 @@ Name|Type|Description
 ----|----|----
 accessToken|String| 쿠키에서 JWT를 삭제하여 로그아웃한다
 
-###Resposne
+### Resposne
 <br>
 
 ```
@@ -250,7 +250,7 @@ balance|int| 유저의 남은 캐시잔액을 조회한다
 type|String|유저 거래내역 타입(충전, 사용, 환불)
 created_at|String| 거래날짜를 확인한다.
 
-###Response
+### Response
 <br>
 
 ```
