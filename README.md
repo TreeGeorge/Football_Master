@@ -21,7 +21,7 @@ FootballMaster 서비스는 장소 대여 및 공유 플랫폼으로서
 
 # 서비스 구조
 
-![이미지](https://technet.tmaxsoft.com/upload/download/online/jeus/pver-20171211-000001/web-service/resources/image003.png)
+![이미지](https://user-images.githubusercontent.com/84691802/123191697-986b6200-d4dc-11eb-863a-495649f56ef9.png)
 
 # Database Schema
 
