@@ -3,9 +3,10 @@
 ```
 GET /matches
 ```
-### RequestParams
 <br>
 
+### RequestParams
+<br>
 Name 		|Type| Description
 ---- 		|----| ---- 
 match_date	|date| 매치날짜를 조회합니다.
@@ -107,6 +108,11 @@ id	|int| 해당 id의 소셜매칭정보를 조회합니다
 ```
 GET /my
 ```
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰을 통해 해당 유저의 정보를 가져옵니다.
+<br>
+
 ### RequestParams
 <br>
 
@@ -128,7 +134,10 @@ email	|String| 유저의 계정 정보를 조회합니다
 ```
 PUT /users
 ```
-
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰정보를 확인하여 유저 정보를 확인합니다.
+<br>
 ### RequestParams
 <br>
 
@@ -175,13 +184,12 @@ user_id||int|유저 아이디를 조회하여 삭제한다
 ```
 POST /login
 ```
-
-### RequestParam
+### RequestHeader
 <br>
 
 Name| Type| Description
 ----|----|----
-accessToken|String|JWT를 통해 로그인한다
+accessToken|String|JWT로 유저 생성 및 로그인을 시도할 때 토큰을 발급합니다.
 
 ###Response
 <br>
@@ -219,7 +227,9 @@ accessToken|String| 쿠키에서 JWT를 삭제하여 로그아웃한다
 ```
 POST /cash_charge
 ```
-
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
 ### RequestParam
 <br>
@@ -247,6 +257,9 @@ created_at|String| 거래날짜를 확인한다.
 POST /cash_refund
 ```
 
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
 ### RequestParam
 <br>
@@ -259,7 +272,7 @@ balance|int| 유저의 남은 캐시잔액을 조회한다
 type|String|유저 거래내역 타입(충전, 사용, 환불)
 created_at|String| 거래날짜를 확인한다.
 
-###Response
+### Response
 <br>
 
 ```
@@ -355,12 +368,15 @@ day_of_week|String| 해당 매치 진행 요일 정보를 저장한다
 ```
 POST /cancel/{match_id}
 ```
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰값을 비교해 해당 유저가 예약한 매치 정보를 가져옵니다.
 
 ### RequestParam
 <br>
 
 Name|Type|Description
-match_id|int| 매치 id 값에 해당하는 매치 예약 정보를 삭제한다
+match_id|int| 매치 id 값에 해당하는 매치 예약 정보를 삭제합니다.
 
 ### Response
 <br>
@@ -376,6 +392,9 @@ match_id|int| 매치 id 값에 해당하는 매치 예약 정보를 삭제한다
 ```
 GET /my_bank
 ```
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니다.
 
 ### RequestParam
 
@@ -401,6 +420,9 @@ name |String| 은행의 이름정보를 조회한다
 ```
 PUT /my_bank
 ```
+### RequestHeader
+Name|Type|Description
+accessToken|String|토큰을 발급해 해당 유저의 계좌 정보를 가져옵니다.
 
 ### RequestParam
 
