@@ -123,7 +123,7 @@ Name 		|Type| Description
 ---- 		|----| ---- 
 email	|String| 유저의 계정 정보를 조회합니다
 
-###Response
+### Response
 <br>
 
 ```
@@ -175,7 +175,7 @@ Name |Type| Description
 ---- |----| ---- 
 user_id||int|유저 아이디를 조회하여 삭제한다
 
-###Response
+### Response
 
 <br>
 
@@ -197,7 +197,7 @@ Name| Type| Description
 ----|----|----
 accessToken|String|JWT로 유저 생성 및 로그인을 시도할 때 토큰을 발급합니다.
 
-###Response
+### Response
 <br>
 
 ```
@@ -415,6 +415,7 @@ accessToken|String|토큰을 발급해 해당 유저의 정보를 가져옵니�
 ### RequestParam
 
 Name|Type|Description
+----|----|----
 user_id|int| id 값에 해당하는 계좌번호정보를 조회한다
 account_number|String| 계좌번호 정보를 조회한다
 account_holder|String| 예금주 정보를 조회한다
