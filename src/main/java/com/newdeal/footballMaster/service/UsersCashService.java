@@ -15,6 +15,6 @@ public interface UsersCashService {
 	public String reservation(UsersCash cashInput, Matches matchInput);
 	
 	// 유저 매치 취소
-	public String cancleMatch(UsersCash cashInput, Matches matchInput);
+	public String cancelMatch(UsersCash cashInput, Matches matchInput);
 
 }

@@ -323,8 +323,8 @@ public class UsersController {
 	}
 	
 	// 매치 예약 취소
-	@RequestMapping(value="/cancle/{match_id}", method = RequestMethod.POST)
-	public Response cancleMatch(
+	@RequestMapping(value="/cancel/{match_id}", method = RequestMethod.POST)
+	public Response cancelMatch(
 			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@PathVariable("match_id") int match_id) {
 		
@@ -356,7 +356,7 @@ public class UsersController {
 		cashInput.setPrice(participationFee);
 		
 		// 예약 취소 서비스
-		answer.setResponse(usersCashService.reservation(cashInput, matchInput));
+		answer.setResponse(usersCashService.cancelMatch(cashInput, matchInput));
 		return answer;
 	}
 	

@@ -58,6 +58,10 @@ public class UsersCashServiceImpl implements UsersCashService{
 		// 취소했다가 다시 예약하려고 할때
 		String userMatchStatus = sqlSession.selectOne("MatchesMapper.checkUserMatchStatus", matchInput);
 		
+		if (userMatchStatus == null) {
+			userMatchStatus = "";
+		}
+		
 		if (userMatchStatus.equals("A")) {
 			output = "Fail : 이미 예약된 상태입니다.";
 			return output;
@@ -92,11 +96,15 @@ public class UsersCashServiceImpl implements UsersCashService{
 	
 	@Transactional
 	@Override
-	public String cancleMatch(UsersCash cashInput, Matches matchInput){
+	public String cancelMatch(UsersCash cashInput, Matches matchInput){
 		
 		String output;
 		
 		String userMatchStatus = sqlSession.selectOne("MatchesMapper.checkUserMatchStatus", matchInput);
+		
+		if (userMatchStatus == null) {
+			userMatchStatus = "";
+		}
 		
 		if (userMatchStatus.equals("C")) {
 			output = "Fail : 이미 취소된 상태입니다.";
