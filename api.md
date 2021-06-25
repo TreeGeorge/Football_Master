@@ -173,7 +173,7 @@ DELETE /users
 
 Name |Type| Description
 ---- |----| ---- 
-user_id||int|유저 아이디를 조회하여 삭제한다
+user_id|int|유저 아이디를 조회하여 삭제한다
 
 ### Response
 
