@@ -7,7 +7,34 @@
 	<body>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
-		<script type="text/javascript">
+	<script type="text/javascript">
+		
+		<!-- 쿠키 생성 -->	
+		function setCookie(name, value, options = {}) {
+
+			  options = {
+			    path: 'http://localhost:8080/footballMaster',
+			    // 필요한 경우, 옵션 기본값을 설정할 수도 있습니다.
+			    ...options
+			  };
+
+			  if (options.expires instanceof Date) {
+			    options.expires = options.expires.toUTCString();
+			  }
+
+			  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+			  for (let optionKey in options) {
+			    updatedCookie += "; " + optionKey;
+			    let optionValue = options[optionKey];
+			    if (optionValue !== true) {
+			      updatedCookie += "=" + optionValue;
+			    }
+			  }
+
+			  document.cookie = updatedCookie;
+		}
+		
 		<!-- (2) LoginWithNaverId Javscript 설정 정보 및 초기화 -->
 		var naverLogin = new naver.LoginWithNaverId(
 			{
@@ -35,36 +62,10 @@
 						return;
 					}
 					
-					function setCookie(name, value, options = {}) {
-
-						  options = {
-						    path: 'http://localhost:8080/footballMaster',
-						    // 필요한 경우, 옵션 기본값을 설정할 수도 있습니다.
-						    ...options
-						  };
-
-						  if (options.expires instanceof Date) {
-						    options.expires = options.expires.toUTCString();
-						  }
-
-						  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-
-						  for (let optionKey in options) {
-						    updatedCookie += "; " + optionKey;
-						    let optionValue = options[optionKey];
-						    if (optionValue !== true) {
-						      updatedCookie += "=" + optionValue;
-						    }
-						  }
-
-						  document.cookie = updatedCookie;
-						}
 					
 					var emailJson = {
 					        "email" : email
 					}
-					
-
 					
 					$.ajax({
 				        url:'/footballMaster/login'
@@ -79,7 +80,7 @@
 		                            ( (location.port==""||location.port==undefined)?"":":" + location.port) + "/footballMaster");
 				        }
 				    });	
-				                                                    
+				                                                  
                  } else {
 					console.log("callback 처리에 실패하였습니다.");
 				}

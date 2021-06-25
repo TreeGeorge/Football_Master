@@ -36,6 +36,7 @@
 		<result property="manager_name" column="manager_name" />
 		<result property="applicantCount" column="applicantCount" />
 		<result property="day_of_week" column="day_of_week" />
+		<result property="status" column="status" />
 		
     </resultMap>
 	
@@ -46,7 +47,7 @@
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
         	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
-        	   name
+        	   name, m.id
         FROM matches m, stadiums s
 		WHERE m.stadiums_id = s.id
 		AND gender_rule IN ${gender_rule}
@@ -65,7 +66,7 @@
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
         	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
-        	   name
+        	   name, m.id
         FROM matches m, stadiums s
 		WHERE m.stadiums_id = s.id
 		AND level = #{level}
@@ -81,7 +82,7 @@
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
         	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
-        	   name
+        	   name, m.id
         FROM matches m, stadiums s
 		WHERE m.stadiums_id = s.id
 		AND gender_rule = #{gender_rule}
@@ -97,7 +98,7 @@
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
         	   (SELECT COUNT(*) FROM users_matches WHERE status = "A" AND matches_id = m.id) AS applicantCount,
-        	   name
+        	   name, m.id
         FROM matches m, stadiums s
 		WHERE m.stadiums_id = s.id
 		AND region = #{region}
@@ -135,7 +136,7 @@
 		SELECT match_date, m.id,
         	   IF(gender_rule='M', '남성', IF(gender_rule='F', '여성', '혼성')) AS gender_rule,
         	   IF(level='L', '일반 (Lv 1~5)', IF(level='M', '중급 (Lv 3~5)', '고급 (Lv 5)')) AS level,
-        	   status
+        	   IF(status="A", "예약 완료", "예약 취소") AS status
         FROM matches m, users_matches u
 		WHERE m.id = u.matches_id
         AND u.users_id = #{users_id};

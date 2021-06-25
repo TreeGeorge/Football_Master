@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.newdeal.footballMaster.model.Matches;
 
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class MatchController {
 	
 	@Autowired
 	SqlSession sqlSession;
 	
-	// 필터링된 매치 정보리스트 가져오기
+	// 매치 정보리스트 가져오기
 	@RequestMapping(value="/matches",method=RequestMethod.GET)
 	public List<Matches> getMatchesFilter() {
 		
@@ -105,31 +107,31 @@ public class MatchController {
 	}
 	
 	// 레벨별 필터
-	@RequestMapping(value="/level/{id}/matches",method=RequestMethod.GET)
+	@RequestMapping(value="/level/{level}/matches",method=RequestMethod.GET)
 	public List<Matches> getLevelMatches(
-			@PathVariable("id") String id) {
+			@PathVariable("level") String level) {
 		
-		List<Matches> output = sqlSession.selectList("MatchesMapper.selectLevelMatches", id);
+		List<Matches> output = sqlSession.selectList("MatchesMapper.selectLevelMatches", level);
 		
 		return output;
 	}
 	
 	// 성별별 필터
-	@RequestMapping(value="/gender/{id}/matches",method=RequestMethod.GET)
+	@RequestMapping(value="/gender/{gender}/matches",method=RequestMethod.GET)
 	public List<Matches> getGenderMatches(
-			@PathVariable("id") String id) {
+			@PathVariable("gender") String gender) {
 		
-		List<Matches> output = sqlSession.selectList("MatchesMapper.selectGenderMatches", id);
+		List<Matches> output = sqlSession.selectList("MatchesMapper.selectGenderMatches", gender);
 		
 		return output;
 	}
 	
 	// 지역별 필터
-	@RequestMapping(value="/region/{id}/matches",method=RequestMethod.GET)
+	@RequestMapping(value="/region/{region}/matches",method=RequestMethod.GET)
 	public List<Matches> getRegionMatches(
-			@PathVariable("id") String id) {
+			@PathVariable("region") String region) {
 		
-		List<Matches> output = sqlSession.selectList("MatchesMapper.selectRegionMatches", id);
+		List<Matches> output = sqlSession.selectList("MatchesMapper.selectRegionMatches", region);
 		
 		return output;
 	}

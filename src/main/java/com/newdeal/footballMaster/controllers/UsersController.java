@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,6 +21,7 @@ import com.newdeal.footballMaster.model.UsersBanks;
 import com.newdeal.footballMaster.model.UsersCash;
 import com.newdeal.footballMaster.service.UsersCashService;
 
+@CrossOrigin
 @RestController
 public class UsersController {
 	
@@ -32,7 +35,7 @@ public class UsersController {
 	// 단일 유저 정보 호출
 	@RequestMapping(value="/my", method = RequestMethod.GET)
 	public Users getUser(
-			@RequestHeader(value="accessToken", required=false) String accessToken) {
+			@RequestHeader(value="accessToken",required=false) String accessToken) {
 		
 		String email = AccessToken.getInstance().checkToken(accessToken);
 		
@@ -160,7 +163,7 @@ public class UsersController {
 	}
 	
 	// 로그아웃
-	@RequestMapping(value="/logout",method=RequestMethod.GET)
+	@RequestMapping(value="/logout",method=RequestMethod.POST)
 	public Response logout() { 
 		
 		Response answer = new Response();
@@ -269,7 +272,7 @@ public class UsersController {
 	// 매치 예약
 	@RequestMapping(value="/reservation/{match_id}", method = RequestMethod.POST)
 	public Response reservation(
-			@RequestHeader("accessToken") String accessToken,
+			@RequestHeader(value="accessToken", required=false) String accessToken,
 			@PathVariable("match_id") int match_id) {
 		
 		Response answer = new Response();
